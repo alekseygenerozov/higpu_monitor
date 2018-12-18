@@ -9,8 +9,11 @@ from datetime import datetime
 i=0
 latest=''
 t0=datetime.now()
+tmax=24*3600
+orb=10000
+end=str(1000000+orb)+'.dat'
 ##Time limit of 1.5 hours
-while ((datetime.now()-t0).seconds<5400):
+while ((datetime.now()-t0).seconds<tmax):
 	out=bc.bash_command('ls -lat 1*dat --time-style=full-iso')
 	out=out.split('\n')
 	out=[row.split(' ') for row in out][:-1]
@@ -21,8 +24,8 @@ while ((datetime.now()-t0).seconds<5400):
 		continue
 	out=[dateutil.parser.parse(row[-4]+' '+row[-3]) for row in out]
 	print latest
-	##Stop if job has been complete (500 orbits)
-	if latest=='1000500.dat':
+	##Stop if job has been complete (xx orbits)
+	if latest==end:
 		break
 	delta_t=(datetime.now()-out[0]).seconds
 	if (delta_t>60):
