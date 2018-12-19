@@ -29,6 +29,7 @@ while ((datetime.now()-t0).seconds<tmax):
 		break
 	delta_t=(datetime.now()-out[0]).seconds
 	if (delta_t>60):
+		##Cancel job if running
 		try:
 			job=shlex.split(bc.bash_command('squeue -u alge9397 -t running|grep -i gpu'))[0]
 			bc.bash_command('scancel {0}'.format(job))	
@@ -37,6 +38,12 @@ while ((datetime.now()-t0).seconds<tmax):
 		##Using higpus built-in restart capability
 		bc.bash_command('cat run_aleksey_sim_restart_template.sh | sed s/xx/{0}/g >run_aleksey_sim_restart.sh'.format(latest))
 		bc.bash_command('sbatch run_aleksey_sim_restart.sh')
+
+		#Wait until job has left the queue so we don't end up submitting a bunch of repeat jobs to the queue 
+		job=shlex.split(bc.bash_command('squeue -u alge9397 -t running|grep -i gpu'))
+		while (len(job)==0):
+			job=shlex.split(bc.bash_command('squeue -u alge9397 -t running|grep -i gpu'))
+
 
 		##For cold restart
 		# bc.bash_command('mkdir run_{0}'.format(i))
