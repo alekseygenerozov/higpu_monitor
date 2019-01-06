@@ -10,7 +10,7 @@ i=0
 latest=''
 t0=datetime.now()
 tmax=24*3600
-orb=10000
+orb=500
 end=str(1000000+orb)+'.dat'
 ##Time limit of 1.5 hours
 while ((datetime.now()-t0).seconds<tmax):
