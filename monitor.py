@@ -16,7 +16,8 @@ end=str(1000000+orb)+'.dat'
 for i in range(4, 6):
 	t0=datetime.now()
 	bc.bash_command('cd trial_{0}'.format(i))
-	bc.bash_command('pwd')
+	x=bc.bash_command('pwd')
+	print x
 	##Time limit of tmax (2 hours) for each trial
 	while ((datetime.now()-t0).seconds<tmax):
 		out=bc.bash_command('ls -lat 1*dat --time-style=full-iso')
