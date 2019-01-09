@@ -23,14 +23,14 @@ for i in range(4, 6):
 		out=np.array(out)
 		try:
 			latest=out[0][-1]
+			out=[dateutil.parser.parse(row[-4]+' '+row[-3]) for row in out]
+			##Stop if job has been complete (xx orbits)
+			if latest==end:
+				break
+			delta_t=(datetime.now()-out[0]).seconds
 		except IndexError:
-			continue
-		out=[dateutil.parser.parse(row[-4]+' '+row[-3]) for row in out]
-		print latest
-		##Stop if job has been complete (xx orbits)
-		if latest==end:
-			break
-		delta_t=(datetime.now()-out[0]).seconds
+			delta_t=100
+
 		if (delta_t>60):
 			##Cancel job if running
 			try:
