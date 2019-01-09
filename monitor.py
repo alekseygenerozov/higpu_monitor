@@ -26,15 +26,21 @@ for i in range(4, 6):
 		out=out.split('\n')
 		out=[row.split(' ') for row in out][:-1]
 		out=np.array(out)
+		##Check how much time has passed since the last output file.
 		try:
 			latest=out[0][-1]
 			out=[dateutil.parser.parse(row[-4]+' '+row[-3]) for row in out]
-			##Stop if job has been complete (xx orbits)
+			##Stop if job has been completed
 			if latest==end:
 				break
 			delta_t=(datetime.now()-out[0]).seconds
+		##If there are no output files--submit the job and wait until we have produced an output file
 		except IndexError:
-			delta_t=100
+			bc.bash_command('sbatch run_aleksey_sim_0.sh')
+			out=bc.bash_command('ls -lat 1*dat --time-style=full-iso')
+			while len(out)==0:
+				out=bc.bash_command('ls -lat 1*dat --time-style=full-iso')
+			delta_t=0
 
 		if (delta_t>60):
 			##Cancel job if running
@@ -61,7 +67,7 @@ for i in range(4, 6):
 			# bc.bash_command('sbatch run_aleksey_sim_0.sh')
 
 			i+=1
-		
+			##Is it necessary to set script to sleep here?
 			bc.bash_command('sleep 60')
 		bc.bash_command('sleep 10')
 	os.chdir('..')
