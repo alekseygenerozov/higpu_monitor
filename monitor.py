@@ -5,6 +5,7 @@ import sys
 
 import dateutil.parser
 from datetime import datetime
+import os
 
 i=0
 latest=''
@@ -15,7 +16,7 @@ end=str(1000000+orb)+'.dat'
 
 for i in range(4, 6):
 	t0=datetime.now()
-	bc.bash_command('cd trial_{0}'.format(i))
+	os.chdir('trial_{0}'.format(i))
 	x=bc.bash_command('pwd')
 	print x
 	sys.stdout.flush()
@@ -63,4 +64,4 @@ for i in range(4, 6):
 		
 			bc.bash_command('sleep 60')
 		bc.bash_command('sleep 10')
-	bc.bash_command('cd ..')
+	os.chdir('..')
