@@ -15,10 +15,9 @@ end=str(1000000+orb)+'.dat'
 
 for i in range(4, 6):
 	t0=datetime.now()
-	bc.bash_command('cd trial_{0}')
 	##Time limit of tmax (2 hours) for each trial
 	while ((datetime.now()-t0).seconds<tmax):
-		out=bc.bash_command('ls -lat 1*dat --time-style=full-iso')
+		out=bc.bash_command('ls -lat trial_{0}/1*dat --time-style=full-iso'.format(i))
 		out=out.split('\n')
 		out=[row.split(' ') for row in out][:-1]
 		out=np.array(out)
@@ -40,8 +39,8 @@ for i in range(4, 6):
 			except IndexError:
 				pass
 			##Using higpus built-in restart capability
-			bc.bash_command('cat run_aleksey_sim_restart_template.sh | sed s/xx/{0}/g >run_aleksey_sim_restart.sh'.format(latest))
-			bc.bash_command('sbatch run_aleksey_sim_restart.sh')
+			bc.bash_command('cat trial_{0}/run_aleksey_sim_restart_template.sh | sed s/xx/{1}/g > trial_{0}/run_aleksey_sim_restart.sh'.format(i, latest))
+			bc.bash_command('sbatch trial_{0}/run_aleksey_sim_restart.sh'.format(i))
 
 			#Wait until job has left the queue so we don't end up submitting a bunch of repeat jobs to the queue 
 			job=shlex.split(bc.bash_command('squeue -u alge9397 -t running|grep -i gpu'))
@@ -60,4 +59,4 @@ for i in range(4, 6):
 		
 			bc.bash_command('sleep 60')
 		bc.bash_command('sleep 10')
-	bc.bash_command('cd ..')
+	# bc.bash_command('cd ..')
