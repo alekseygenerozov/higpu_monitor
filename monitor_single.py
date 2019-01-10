@@ -9,7 +9,7 @@ import os
 
 i=0
 latest=''
-tmax=2*3600
+tmax=24*3600
 orb=500
 end=str(1000000+orb)+'.dat'
 
