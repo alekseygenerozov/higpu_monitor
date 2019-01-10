@@ -16,7 +16,7 @@ end=str(1000000+orb)+'.dat'
 
 # for i in range(4, 6):
 t0=datetime.now()
-os.chdir('trial_{0}'.format(i))
+# os.chdir('trial_{0}'.format(i))
 x=bc.bash_command('pwd')
 print x
 sys.stdout.flush()
