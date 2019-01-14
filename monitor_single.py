@@ -16,12 +16,13 @@ end=str(1000000+orb)+'.dat'
 
 # for i in range(4, 6):
 t0=datetime.now()
-# os.chdir('trial_{0}'.format(i))
 x=bc.bash_command('pwd')
 print x
 sys.stdout.flush()
-##Time limit of tmax (2 hours) for each trial
-while ((datetime.now()-t0).seconds<tmax):
+last=''
+stuck=0
+##Abort if we are stuck on a single orbit
+while (stuck<10):
 	out=bc.bash_command('ls -lat 1*dat --time-style=full-iso')
 	out=out.split('\n')
 	out=[row.split(' ') for row in out][:-1]
@@ -43,7 +44,8 @@ while ((datetime.now()-t0).seconds<tmax):
 		delta_t=0
 
 	if (delta_t>60):
-		##Cancel job if running
+		if latest==last:
+			stuck+=1
 		try:
 			job=shlex.split(bc.bash_command('squeue -u alge9397 -t running|grep -i gpu'))[0]
 			bc.bash_command('scancel {0}'.format(job))	
@@ -58,16 +60,8 @@ while ((datetime.now()-t0).seconds<tmax):
 		while (len(job)==0):
 			job=shlex.split(bc.bash_command('squeue -u alge9397 -t running|grep -i gpu'))
 
-
-		##For cold restart
-		# bc.bash_command('mkdir run_{0}'.format(i))
-		# bc.bash_command('mv init_disk run_{0}'.format(i))
-		# bc.bash_command('cp {0} init_disk'.format(latest))
-		# bc.bash_command('mv *dat run_{0}'.format(i))
-		# bc.bash_command('sbatch run_aleksey_sim_0.sh')
-
 		i+=1
 		##Is it necessary to set script to sleep here?
+		last=latest
 		bc.bash_command('sleep 60')
 	bc.bash_command('sleep 10')
-	# os.chdir('..')
