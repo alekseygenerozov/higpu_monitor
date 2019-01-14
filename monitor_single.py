@@ -65,3 +65,9 @@ while (stuck<10):
 		last=latest
 		bc.bash_command('sleep 60')
 	bc.bash_command('sleep 10')
+
+try:
+	job=shlex.split(bc.bash_command('squeue -u alge9397 -t running|grep -i gpu'))[0]
+	bc.bash_command('scancel {0}'.format(job))	
+except IndexError:
+	pass
